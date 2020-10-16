@@ -1,0 +1,91 @@
+var f = open(sys.argv[1], "r");
+var prg = read(f);
+close(f);
+var prgPos = 0;
+var mem = array(0);
+var memPos = 0;
+
+while prgPos < len(prg) {
+    if grab(prg, prgPos) is ">" {
+        | Implement greater or equal to and less than or equal to as le and ge |;
+        var memPos = memPos + 1;
+        if len(mem) le memPos {
+            append(mem, 0)
+        }
+    };
+    if grab(prg, prgPos) is "<" {
+        var memPos = memPos - 1;
+        if memPos < 0 {
+            print "Error: Moved off tape";
+            exit(0)
+        }
+    };
+    if grab(prg, prgPos) is "+" {
+        var grab(mem, memPos) = grab(mem, memPos) + 1;
+        if grab(mem, memPos) > 255 {
+            var grab(mem, memPos) = 0
+        }
+    };
+    if grab(prg, prgPos) is "-" {
+        var grab(mem, memPos) = grab(mem, memPos) + 1;
+        | check if negatives work later |;
+        if grab(mem, memPos) le -1 {
+            var grab(mem, memPos) = 255
+        }
+    };
+    if grab(prg, prgPos) is "." {
+        print(chr(grab(mem, memPos)), end="")
+    };
+    if grab(prg, prgPos) is "," {
+        var inp = input "Input requested: ";
+        var grab(mem, memPos) = ord(grab(inp, 0))
+    };
+    if grab(prg, prgPos) is "[" {
+        if grab(mem, memPos) is 0 {
+            var countOpened = 0;
+            var prgPos = prgPos + 1;
+            while prgPos < len(prg) {
+                | Maybe add `and` operator |;
+                if grab(prg, prgPos) is "]" {
+                    if countOpened is 0 {
+                        | Make it so break doesn't always have to return a value |;
+                        break grab(prg, prgPos)
+                    }
+                };
+                if grab(prg, prgPos) is "[" {
+                    var countOpened = countOpened + 1
+                };
+                if grab(prg, prgPos) is "]" {
+                    var countOpened = countOpened - 1
+                };
+
+                var prgPos = prgPos + 1
+            }
+        }
+    };
+    if grab(prg, prgPos) is "]" {
+        if grab(mem, memPos) != 0 {
+            var countClosed = 0;
+            var prgPos = prgPos - 1;
+            while prgPos ge len(prg) {
+                | Maybe add `and` operator |;
+                if grab(prg, prgPos) is "[" {
+                    if countClosed is 0 {
+                        | Make it so break doesn't always have to return a value |;
+                        break grab(prg, prgPos)
+                    }
+                };
+                if grab(prg, prgPos) is "]" {
+                    var countClosed = countClosed + 1
+                };
+                if grab(prg, prgPos) is "[" {
+                    var countClosed = countClosed - 1
+                };
+
+                var prgPos = prgPos - 1
+            }
+        }
+    };
+
+    var prgPos = prgPos + 1
+}
