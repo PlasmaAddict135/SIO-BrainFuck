@@ -1,4 +1,4 @@
-var f = open(sys.argv[1], "r");
+var f = sys_open();
 var prg = read(f);
 close(f);
 var prgPos = 0;
@@ -7,7 +7,6 @@ var memPos = 0;
 
 while prgPos < len(prg) {
     if grab(prg, prgPos) is ">" {
-        | Implement greater or equal to and less than or equal to as le and ge |;
         var memPos = memPos + 1;
         if len(mem) le memPos {
             append(mem, 0)
